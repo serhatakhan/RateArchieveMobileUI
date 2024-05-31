@@ -11,8 +11,9 @@ import {
 import {height, width} from '../../utils/constants';
 import {Colors} from '../../theme/colors';
 import LaunchButton from '../../components/launchButton';
+import { REGISTER, SIGNIN } from '../../utils/router';
 
-const Launch = () => {
+const Launch = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <ImageBackground
@@ -29,7 +30,7 @@ const Launch = () => {
         </View>
 
         <View style={styles.buttonWrapper}>
-          <LaunchButton title="GİRİŞ YAP" />
+          <LaunchButton title="GİRİŞ YAP" onPress={()=> navigation.navigate(SIGNIN)} />
           <Text style={{padding: 5, marginBottom: 16, color: 'gray'}}>
             Zaten hesabım var
           </Text>
@@ -41,6 +42,7 @@ const Launch = () => {
               borderRadius: 100,
               color: Colors.BUTTON_COLOR,
             }}
+            onPress={()=> navigation.navigate(REGISTER)}
           />
           <Text style={{padding: 5, color: 'gray'}}>
             Hesabınız yok mu?{' '}
