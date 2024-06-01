@@ -51,24 +51,6 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flex: 1,
   },
-  touchableSocial: {
-    borderWidth: 0.2,
-    borderColor: 'gray',
-    borderRadius: 50,
-    padding: 7,
-  },
 });
 
 export default SignIn;
-
-{
-  /* <Image
-source={require('../../assets/ciro.jpg')}
-style={{
-  width: width,
-  height: height * 0.45,
-  borderBottomLeftRadius: 40,
-  borderBottomRightRadius: 40,
-}}
-/> */
-}
