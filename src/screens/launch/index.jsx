@@ -26,6 +26,7 @@ const Launch = ({navigation}) => {
             style={{
               width: width - 50,
               height: height * 0.44,
+              resizeMode: "contain"
             }} />
         </View>
 
