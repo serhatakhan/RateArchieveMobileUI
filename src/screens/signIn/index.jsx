@@ -1,77 +1,132 @@
-import React, { Component } from 'react';
-import {
-  View,
-  StyleSheet,
-  Image
-} from 'react-native';
-import { width } from '../../utils/constants';
-import { Input } from '@ui-kitten/components';
+import React, {useState} from 'react';
+import {View, StyleSheet, Image, Text, SafeAreaView} from 'react-native';
+import {height, width} from '../../utils/constants';
+import {Button, Input} from '@ui-kitten/components';
+import {Colors} from '../../theme/colors';
+import {Eye, EyeSlash} from 'iconsax-react-native';
+import {REGISTER} from '../../utils/router';
 
-const SignIn = ({ navigation }) => {
-  
-  const useInputState = (initialValue = '') => {
-    const [value, setValue] = React.useState(initialValue);
-    return { value, onChangeText: setValue };
-  };
-
-  const mediumInputState = useInputState();
+const SignIn = ({navigation}) => {
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.imageWrapper}>
+    <View style={styles.container}>
+      <View style={styles.image}>
         <Image
-          source={require('../../assets/ciro1.png')}
-          style={{ resizeMode: 'contain', flex: 1, width: width - 90 }}
+          source={require('../../assets/ai1.jpg')}
+          style={{resizeMode: 'contain', width: width, height: height}}
         />
       </View>
 
-      <View style={styles.inputArea}>
-        <Input
-          size='medium'
-          placeholder='Medium'
-          {...mediumInputState}
-          label={'User Name'}
-        />
-        <Input
-          size='medium'
-          placeholder='Medium'
-          {...mediumInputState}
-          label={'Password'}
-        />
-      </View>
+      <SafeAreaView style={styles.inputArea}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={styles.text}>Giriş Yap</Text>
+        </View>
+
+        <View style={{flex: 1, justifyContent: 'center', paddingHorizontal: 16}}>
+          <Input
+            size="large"
+            placeholder="Kullanıcı Adı"
+            placeholderTextColor={'gray'}
+            clearButtonMode="while-editing"
+            style={styles.inputStyle}
+            value={username}
+            onChangeText={value => setUsername(value)}
+          />
+          <Input
+            size="large"
+            placeholder="Şifre"
+            placeholderTextColor={'gray'}
+            clearButtonMode="while-editing"
+            value={password}
+            onChangeText={password => setPassword(password)}
+            secureTextEntry={secureTextEntry}
+            accessoryRight={() =>
+              secureTextEntry ? (
+                <EyeSlash
+                  size="23"
+                  color={Colors.BLACK}
+                  onPress={() => setSecureTextEntry(false)}/>
+              ) : (
+                <Eye
+                  size="23"
+                  color={Colors.BLACK}
+                  onPress={() => setSecureTextEntry(true)}/>)}
+            style={styles.inputStyle}
+          />
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            style={styles.button}
+            appearance="outline"
+            size="large"
+            onPress={() => navigation.navigate(REGISTER)}>
+              {evaProps => <Text {...evaProps} style={{color: Colors.BUTTON_COLOR, fontWeight: "600", fontSize: 17}}>Kaydol</Text>}
+          </Button>
+          <View style={styles.line}></View>
+          <Button style={[styles.button, styles.signInButton]} size="large">
+            {evaProps => <Text {...evaProps} style={{color: Colors.WHITE, fontWeight: "600", fontSize: 17}}>Giriş Yap</Text>}
+          </Button>
+        </View>
+      </SafeAreaView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  imageBackground: {
+  container: {
+    flex: 1, 
+    backgroundColor: Colors.GRAY2},
+  image: {
     flex: 1,
-    width: 'auto',
-    height: 'auto',
-  },
-  imageWrapper: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    alignItems: "center",
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 15.65,
-    elevation: 6,
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-  },
-  buttonWrapper: {
-    flex: 1,
+    backgroundColor: Colors.GRAY2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   inputArea: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-
+    backgroundColor: 'white',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    borderTopWidth: 3,
+    borderRightWidth: 0.4,
+    borderLeftWidth: 0.4,
+    borderColor: Colors.BUTTON_COLOR,
+  },
+  inputStyle: {
+    marginVertical: 8,
+    borderRadius: 40,
+  },
+  text: {
+    fontSize: 30,
+    fontWeight: '600',
+    fontVariant: ['small-caps'],
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 20,
+  },
+  button: {
+    borderRadius: 100,
+    width: 150,
+    borderWidth: 2,
+    borderColor: Colors.BUTTON_COLOR
+  },
+  signInButton: {
+    backgroundColor: Colors.BUTTON_COLOR,
+    borderColor: Colors.BUTTON_COLOR,
+  },
+  line: {
+    width: 2.5,
+    height: height * 0.07,
+    borderRadius: 100,
+    backgroundColor: '#f4f4f4',
   },
 });
 

@@ -4,8 +4,9 @@ import {LAUNCH, REGISTER, SIGNIN} from '../utils/router';
 import Launch from '../screens/launch';
 import SignIn from '../screens/signIn';
 import Register from '../screens/register';
-import {ArrowLeft} from 'iconsax-react-native';
-import {TouchableOpacity} from 'react-native';
+import {ArrowSquareLeft} from 'iconsax-react-native';
+import {Pressable} from 'react-native';
+import { Colors } from '../theme/colors';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,9 +21,9 @@ function RootNavigator() {
           options={({navigation}) => ({
             headerShown: true,
             headerLeft: () => (
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <ArrowLeft size="32" color="#FF8A65" />
-              </TouchableOpacity>),
+              <Pressable onPress={() => navigation.goBack()}>
+                <ArrowSquareLeft size="38" color={"#1B203C"} variant='Bold' />
+              </Pressable>),
             headerTitle: '',
             headerTransparent: true,
           })}/>

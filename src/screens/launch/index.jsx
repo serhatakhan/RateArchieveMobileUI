@@ -17,8 +17,9 @@ const Launch = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <ImageBackground
-        source={require('../../assets/bg7.jpeg')}
-        style={styles.imageBackground}>
+        source={require('../../assets/ronaldinho4.jpeg')}
+        style={styles.imageBackground}
+        blurRadius={3}>
 
         <View style={styles.imageWrapper}>
           <Image
@@ -32,7 +33,7 @@ const Launch = ({navigation}) => {
 
         <View style={styles.buttonWrapper}>
           <LaunchButton title="GİRİŞ YAP" onPress={()=> navigation.navigate(SIGNIN)} />
-          <Text style={{padding: 5, marginBottom: 16, color: 'gray'}}>
+          <Text style={{padding: 5, marginBottom: 16, color: 'white'}}>
             Zaten hesabım var
           </Text>
 
@@ -45,7 +46,7 @@ const Launch = ({navigation}) => {
             }}
             onPress={()=> navigation.navigate(REGISTER)}
           />
-          <Text style={{padding: 5, color: 'gray'}}>
+          <Text style={{padding: 5, color: 'white'}}>
             Hesabınız yok mu?{' '}
             <Text style={{textDecorationLine: 'underline'}}>Kaydolun</Text>{' '}
           </Text>
@@ -78,7 +79,6 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     flex: 2,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   buttonWrapper: {

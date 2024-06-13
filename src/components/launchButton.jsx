@@ -28,7 +28,7 @@ container: {
     borderColor: Colors.BUTTON_COLOR,
     borderRadius: 100,
     padding: 15,
-    width: width * 0.75,
+    width: width * 0.7,
   },
   text: {
     color: Colors.GRAY,
