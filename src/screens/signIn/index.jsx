@@ -47,12 +47,12 @@ const SignIn = ({navigation}) => {
               secureTextEntry ? (
                 <EyeSlash
                   size="23"
-                  color={Colors.BLACK}
+                  color={"gray"}
                   onPress={() => setSecureTextEntry(false)}/>
               ) : (
                 <Eye
                   size="23"
-                  color={Colors.BLACK}
+                  color={"gray"}
                   onPress={() => setSecureTextEntry(true)}/>)}
             style={styles.inputStyle}
           />

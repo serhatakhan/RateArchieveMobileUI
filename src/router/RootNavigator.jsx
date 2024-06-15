@@ -22,12 +22,22 @@ function RootNavigator() {
             headerShown: true,
             headerLeft: () => (
               <Pressable onPress={() => navigation.goBack()}>
-                <ArrowSquareLeft size="38" color={"#1B203C"} variant='Bold' />
+                <ArrowSquareLeft size="38" color={Colors.NAVY} variant='Bold' />
               </Pressable>),
             headerTitle: '',
             headerTransparent: true,
-          })}/>
-        <Stack.Screen name={REGISTER} component={Register} />
+          })}
+          />
+        <Stack.Screen name={REGISTER} component={Register}        
+          options={({navigation}) => ({
+            headerShown: true,
+            headerLeft: () => (
+              <Pressable onPress={() => navigation.goBack()}>
+                <ArrowSquareLeft size="38" color={Colors.BLACK} variant='Bold' />
+              </Pressable>),
+            headerTitle: '',
+            headerTransparent: true,
+          })} />
       </Stack.Group>
 
       <Stack.Group>

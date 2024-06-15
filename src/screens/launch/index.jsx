@@ -17,9 +17,9 @@ const Launch = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <ImageBackground
-        source={require('../../assets/ronaldinho4.jpeg')}
+        source={require('../../assets/ai8.jpg')}
         style={styles.imageBackground}
-        blurRadius={3}>
+        >
 
         <View style={styles.imageWrapper}>
           <Image
@@ -32,8 +32,8 @@ const Launch = ({navigation}) => {
         </View>
 
         <View style={styles.buttonWrapper}>
-          <LaunchButton title="GİRİŞ YAP" onPress={()=> navigation.navigate(SIGNIN)} />
-          <Text style={{padding: 5, marginBottom: 16, color: 'white'}}>
+          <LaunchButton title="GİRİŞ YAP" style={{backgroundColor: Colors.ORANGE, borderRadius: 100}} onPress={()=> navigation.navigate(SIGNIN)} />
+          <Text style={{padding: 5, marginBottom: 16, color: 'white', fontWeight: "600"}}>
             Zaten hesabım var
           </Text>
 
@@ -46,9 +46,9 @@ const Launch = ({navigation}) => {
             }}
             onPress={()=> navigation.navigate(REGISTER)}
           />
-          <Text style={{padding: 5, color: 'white'}}>
+          <Text style={{padding: 5, color: 'white', fontWeight: "600"}}>
             Hesabınız yok mu?{' '}
-            <Text style={{textDecorationLine: 'underline'}}>Kaydolun</Text>{' '}
+            <Text style={{textDecorationLine: 'underline', fontWeight: "700"}}>Kaydolun</Text>{' '}
           </Text>
         </View>
 
