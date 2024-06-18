@@ -1,23 +1,31 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Image, Text, SafeAreaView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  SafeAreaView,
+  Pressable,
+} from 'react-native';
 import {height, width} from '../../utils/constants';
 import {Button, Input} from '@ui-kitten/components';
 import {Colors} from '../../theme/colors';
 import {Eye, EyeSlash} from 'iconsax-react-native';
 import {ProgressSteps, ProgressStep} from 'react-native-progress-steps';
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, {useSharedValue} from 'react-native-reanimated';
 import {SIGNIN} from '../../utils/router';
+import BottomSheet from './registerBottomSheet';
 
 const Register = ({navigation}) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
-  const isFlipped = useSharedValue(false);
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [reference, setReference] = useState('');
+
+  const isOpen = useSharedValue(false); // bottomsheet için
 
   const progressSteps = {
     borderWidth: 2,
@@ -40,10 +48,11 @@ const Register = ({navigation}) => {
     nextBtnTextStyle: styles.buttonText,
     previousBtnTextStyle: styles.buttonText,
     onSubmit: () => {
-      isFlipped.value = !isFlipped.value;
+      isOpen.value = !isOpen.value;
+      console.log(name, surname, mail, password, passwordConfirm, reference);
     },
   };
-  // İlk sayfada Önceki butonunun boş olarak görüntülenmemesi için gizliyoruz
+  // İlk sayfada 'Önceki' butonunun boş olarak görüntülenmemesi için gizliyoruz
   const firstProgressStep = {
     ...progressStep,
     previousBtnStyle: {
@@ -51,9 +60,16 @@ const Register = ({navigation}) => {
     },
   };
 
-  const RegularContent = () => {
-    return (
-      <View style={regularContentStyles.card}>
+  return (
+    <View style={styles.container}>
+      <View style={styles.image}>
+        <Image
+          source={require('../../assets/ai4.jpg')}
+          style={{resizeMode: 'contain', width: width, height: height}}
+        />
+      </View>
+
+      <SafeAreaView style={styles.inputArea}>
         <View
           style={{flex: 0.8, justifyContent: 'center', alignItems: 'center'}}>
           <Text style={styles.text}>Kayıt Ol</Text>
@@ -69,8 +85,8 @@ const Register = ({navigation}) => {
                 placeholderTextColor={'gray'}
                 clearButtonMode="while-editing"
                 style={styles.inputStyle}
-                value={username}
-                onChangeText={value => setUsername(value)}
+                value={name}
+                onChangeText={value => setName(value)}
               />
               <Input
                 size="large"
@@ -78,8 +94,8 @@ const Register = ({navigation}) => {
                 placeholderTextColor={'gray'}
                 clearButtonMode="while-editing"
                 style={styles.inputStyle}
-                value={username}
-                onChangeText={value => setUsername(value)}
+                value={surname}
+                onChangeText={value => setSurname(value)}
               />
               <Input
                 size="large"
@@ -87,8 +103,8 @@ const Register = ({navigation}) => {
                 placeholderTextColor={'gray'}
                 clearButtonMode="while-editing"
                 style={styles.inputStyle}
-                value={username}
-                onChangeText={value => setUsername(value)}
+                value={mail}
+                onChangeText={value => setMail(value)}
               />
             </ProgressStep>
             <ProgressStep label="Şifre" {...progressStep}>
@@ -122,8 +138,8 @@ const Register = ({navigation}) => {
                 placeholder="Şifre Doğrula"
                 placeholderTextColor={'gray'}
                 clearButtonMode="while-editing"
-                value={password}
-                onChangeText={password => setPassword(password)}
+                value={passwordConfirm}
+                onChangeText={password => setPasswordConfirm(password)}
                 secureTextEntry={secureTextEntry}
                 accessoryRight={() =>
                   secureTextEntry ? (
@@ -150,132 +166,37 @@ const Register = ({navigation}) => {
                 placeholderTextColor={'gray'}
                 clearButtonMode="while-editing"
                 style={styles.inputStyle}
-                value={username}
-                onChangeText={value => setUsername(value)}
+                value={reference}
+                onChangeText={value => setReference(value)}
               />
             </ProgressStep>
           </ProgressSteps>
         </View>
-      </View>
-    );
-  };
 
-  const regularContentStyles = StyleSheet.create({
-    card: {
-      flex: 1,
-      backgroundColor: 'white',
-      borderRadius: 16,
-    },
-  });
+        <BottomSheet isOpen={isOpen}>
+          <Animated.Text style={{fontSize: 16, fontWeight: '500'}}>
+            Kayıt olma işlemi başarılı.
+          </Animated.Text>
 
-  const FlippedContent = () => {
-    return (
-      <View style={flippedContentStyles.card}>
-        <Button
-          style={styles.button}
-          appearance="outline"
-          size="large"
-          onPress={() => navigation.navigate(SIGNIN)}>
-          Giriş Yap
-        </Button>
-      </View>
-    );
-  };
-
-  const flippedContentStyles = StyleSheet.create({
-    card: {
-      flex: 1,
-      backgroundColor: 'aliceblue',
-      borderRadius: 16,
-    },
-    text: {
-      color: '#001a72',
-    },
-  });
-
-  const FlipCard = ({
-    isFlipped,
-    direction = 'y',
-    duration = 500,
-    RegularContent,
-    FlippedContent,
-  }) => {
-    const isDirectionX = direction === 'x';
-
-    const regularCardAnimatedStyle = useAnimatedStyle(() => {
-      const spinValue = interpolate(Number(isFlipped.value), [0, 1], [0, 180]);
-      const rotateValue = withTiming(`${spinValue}deg`, {duration});
-
-      return {
-        transform: [
-          isDirectionX ? {rotateX: rotateValue} : {rotateY: rotateValue},
-        ],
-      };
-    });
-
-    const flippedCardAnimatedStyle = useAnimatedStyle(() => {
-      const spinValue = interpolate(
-        Number(isFlipped.value),
-        [0, 1],
-        [180, 360],
-      );
-      const rotateValue = withTiming(`${spinValue}deg`, {duration});
-
-      return {
-        transform: [
-          isDirectionX ? {rotateX: rotateValue} : {rotateY: rotateValue},
-        ],
-      };
-    });
-
-    return (
-      <View style={{flex: 1}}>
-        <Animated.View
-          style={[flipCardStyles.regularCard, regularCardAnimatedStyle]}>
-          {RegularContent}
-        </Animated.View>
-
-        <View style={{justifyContent: "center", alignItems: "center"}}>
-          <Animated.View
-            style={[flipCardStyles.flippedCard, flippedCardAnimatedStyle]}>
-            {FlippedContent}
-          </Animated.View>
-        </View>
-      </View>
-    );
-  };
-
-  const flipCardStyles = StyleSheet.create({
-    regularCard: {
-      // position: 'absolute',
-      backfaceVisibility: 'hidden',
-      zIndex: 1,
-      flex: 1,
-    },
-    flippedCard: {
-      backfaceVisibility: 'hidden',
-      // flex: 1,
-      zIndex: 2,
-      position: 'absolute',
-    },
-  });
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.image}>
-        <Image
-          source={require('../../assets/ai4.jpg')}
-          style={{resizeMode: 'contain', width: width, height: height}}
-        />
-      </View>
-
-      <SafeAreaView style={styles.inputArea}>
-        <FlipCard
-          isFlipped={isFlipped}
-          cardStyle={styles.flipCard}
-          FlippedContent={<FlippedContent />}
-          RegularContent={<RegularContent />}
-        />
+          <Pressable>
+            <Button
+              style={styles.signInButton}
+              size="medium"
+              onPress={() => navigation.navigate(SIGNIN)}>
+              {evaProps => (
+                <Text
+                  {...evaProps}
+                  style={{
+                    color: Colors.WHITE,
+                    fontWeight: '600',
+                    fontSize: 17,
+                  }}>
+                  Giriş Yap
+                </Text>
+              )}
+            </Button>
+          </Pressable>
+        </BottomSheet>
       </SafeAreaView>
     </View>
   );
@@ -303,7 +224,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.BUTTON_COLOR,
   },
   inputStyle: {
-    marginVertical: 8,
+    marginVertical: 10,
     borderRadius: 40,
   },
   text: {
@@ -317,14 +238,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     borderRadius: 100,
   },
+  signInButton: {
+    backgroundColor: Colors.BUTTON_COLOR,
+    paddingHorizontal: 22,
+    borderRadius: 100,
+    marginVertical: 10,
+  },
   buttonText: {
     color: Colors.WHITE,
     fontSize: 22,
     fontWeight: '600',
-  },
-  flipCard: {
-    width: 170,
-    height: 200,
   },
 });
 
