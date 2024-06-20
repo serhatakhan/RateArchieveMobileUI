@@ -6,6 +6,7 @@ import {
   Text,
   SafeAreaView,
   Pressable,
+  StatusBar,
 } from 'react-native';
 import {height, width} from '../../utils/constants';
 import {Button, Input} from '@ui-kitten/components';
@@ -62,6 +63,7 @@ const Register = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.image}>
         <Image
           source={require('../../assets/ai4.jpg')}
@@ -243,6 +245,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     borderRadius: 100,
     marginVertical: 10,
+    borderColor: Colors.BUTTON_COLOR
   },
   buttonText: {
     color: Colors.WHITE,
