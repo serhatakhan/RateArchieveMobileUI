@@ -16,15 +16,12 @@ import {ProgressSteps, ProgressStep} from 'react-native-progress-steps';
 import Animated, {useSharedValue} from 'react-native-reanimated';
 import {SIGNIN} from '../../utils/router';
 import BottomSheet from './registerBottomSheet';
+import {Formik} from 'formik';
+import RegisterSchema from './registerSchema';
 
 const Register = ({navigation}) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [mail, setMail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [reference, setReference] = useState('');
+  const [secureTextEntry2, setSecureTextEntry2] = useState(true);
 
   const isOpen = useSharedValue(false); // bottomsheet için
 
@@ -40,7 +37,8 @@ const Register = ({navigation}) => {
     marginBottom: 70,
     topOffset: 20,
   };
-  const progressStep = {
+
+  const progressStep = handleSubmit => ({
     nextBtnText: '>',
     previousBtnText: '<',
     finishBtnText: 'Kayıt Ol',
@@ -48,22 +46,24 @@ const Register = ({navigation}) => {
     previousBtnStyle: styles.button,
     nextBtnTextStyle: styles.buttonText,
     previousBtnTextStyle: styles.buttonText,
-    onSubmit: () => {
-      isOpen.value = !isOpen.value;
-      console.log(name, surname, mail, password, passwordConfirm, reference);
-    },
-  };
+    onSubmit: handleSubmit,
+  });
+  // * Formik'in handleSubmit fonksiyonunu, ProgressStep bileşeninin onSubmit özelliği
+  // içinde kullanmak için, handleSubmit fonksiyonunu Formik bileşeninin içinde tanımlanan
+  // render fonksiyonundan dışarıya çıkarttık ve sonra bu fonksiyonu ProgressStep
+  // bileşenine ilettik. Böylece handleSubmit fonksiyonunu ProgressStep bileşeninin onSubmit özelliğine geçiriyoruz. Form son adıma geldiğinde ve kullanıcı "Kayıt Ol" butonuna bastığında handleSubmit fonksiyonu çağrılacak ve form verileri gönderilecektir.
+
   // İlk sayfada 'Önceki' butonunun boş olarak görüntülenmemesi için gizliyoruz
-  const firstProgressStep = {
-    ...progressStep,
+  const firstProgressStep = handleSubmit => ({
+    ...progressStep(handleSubmit),
     previousBtnStyle: {
       display: 'none',
     },
-  };
+  });
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={'light-content'} />
       <View style={styles.image}>
         <Image
           source={require('../../assets/ai4.jpg')}
@@ -79,100 +79,144 @@ const Register = ({navigation}) => {
 
         <View
           style={{flex: 4, justifyContent: 'center', paddingHorizontal: 16}}>
-          <ProgressSteps {...progressSteps}>
-            <ProgressStep label="Ad - Soyad" {...firstProgressStep}>
-              <Input
-                size="large"
-                placeholder="İsim"
-                placeholderTextColor={'gray'}
-                clearButtonMode="while-editing"
-                style={styles.inputStyle}
-                value={name}
-                onChangeText={value => setName(value)}
-              />
-              <Input
-                size="large"
-                placeholder="Soyisim"
-                placeholderTextColor={'gray'}
-                clearButtonMode="while-editing"
-                style={styles.inputStyle}
-                value={surname}
-                onChangeText={value => setSurname(value)}
-              />
-              <Input
-                size="large"
-                placeholder="E-mail"
-                placeholderTextColor={'gray'}
-                clearButtonMode="while-editing"
-                style={styles.inputStyle}
-                value={mail}
-                onChangeText={value => setMail(value)}
-              />
-            </ProgressStep>
-            <ProgressStep label="Şifre" {...progressStep}>
-              <Input
-                size="large"
-                placeholder="Şifre"
-                placeholderTextColor={'gray'}
-                clearButtonMode="while-editing"
-                value={password}
-                onChangeText={password => setPassword(password)}
-                secureTextEntry={secureTextEntry}
-                accessoryRight={() =>
-                  secureTextEntry ? (
-                    <EyeSlash
-                      size="23"
-                      color={'gray'}
-                      onPress={() => setSecureTextEntry(false)}
+          {/* Formik bileşeni, çocuk bileşen olarak bir fonksiyon alır. Bu fonksiyon, formun kontrolü için gerekli yardımcı fonksiyonlar ve form değerlerini içeren bir nesne. */}
+          <Formik
+            initialValues={{
+              name: '',
+              surname: '',
+              email: '',
+              password: '',
+              passwordConfirm: '',
+              reference: '',
+            }}
+            validationSchema={RegisterSchema}
+            onSubmit={(values, {resetForm}) => {
+              // Form gönderildiğinde yapılacak işlemler
+              isOpen.value = !isOpen.value;
+              resetForm();
+              console.log(values);
+            }}>
+            {({handleChange, handleSubmit, handleBlur, values, errors}) => (
+              <ProgressSteps {...progressSteps}>
+                <ProgressStep label="Ad - Soyad" {...firstProgressStep(handleSubmit)}>
+                  <View style={{height: height * 0.083}}>
+                    <Input
+                      size="large"
+                      placeholder="İsim"
+                      placeholderTextColor={'gray'}
+                      clearButtonMode="while-editing"
+                      style={styles.inputStyle}
+                      caption={errors.name}
+                      value={values.name}
+                      onChangeText={handleChange('name')}
+                      onBlur={handleBlur('name')}
+                      status={errors.name ? 'danger' : 'basic'}
                     />
-                  ) : (
-                    <Eye
-                      size="23"
-                      color={'gray'}
-                      onPress={() => setSecureTextEntry(true)}
+                  </View>
+                  <View style={{height: height * 0.083}}>
+                    <Input
+                      size="large"
+                      placeholder="Soyisim"
+                      placeholderTextColor={'gray'}
+                      clearButtonMode="while-editing"
+                      style={styles.inputStyle}
+                      caption={errors.surname}
+                      value={values.surname}
+                      onChangeText={handleChange('surname')}
+                      onBlur={handleBlur('surname')}
+                      status={errors.surname ? 'danger' : 'basic'}
                     />
-                  )
-                }
-                style={styles.inputStyle}
-              />
-              <Input
-                size="large"
-                placeholder="Şifre Doğrula"
-                placeholderTextColor={'gray'}
-                clearButtonMode="while-editing"
-                value={passwordConfirm}
-                onChangeText={password => setPasswordConfirm(password)}
-                secureTextEntry={secureTextEntry}
-                accessoryRight={() =>
-                  secureTextEntry ? (
-                    <EyeSlash
-                      size="23"
-                      color={'gray'}
-                      onPress={() => setSecureTextEntry(false)}
+                  </View>
+                  <Input
+                    size="large"
+                    placeholder="E-mail"
+                    placeholderTextColor={'gray'}
+                    clearButtonMode="while-editing"
+                    style={styles.inputStyle}
+                    caption={errors.email}
+                    value={values.email}
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    status={errors.email ? 'danger' : 'basic'}
+                  />
+                </ProgressStep>
+                <ProgressStep label="Şifre" {...progressStep(handleSubmit)}>
+                  <View style={{height: height * 0.083}}>
+                    <Input
+                      size="large"
+                      placeholder="Şifre"
+                      placeholderTextColor={'gray'}
+                      clearButtonMode="while-editing"
+                      onBlur={handleBlur('password')}
+                      caption={errors.password}
+                      value={values.password}
+                      onChangeText={handleChange('password')}
+                      status={errors.password ? 'danger' : 'basic'}
+                      secureTextEntry={secureTextEntry}
+                      accessoryRight={() =>
+                        secureTextEntry ? (
+                          <EyeSlash
+                            size="23"
+                            color={'gray'}
+                            onPress={() => setSecureTextEntry(false)}
+                          />
+                        ) : (
+                          <Eye
+                            size="23"
+                            color={'gray'}
+                            onPress={() => setSecureTextEntry(true)}
+                          />
+                        )
+                      }
+                      style={styles.inputStyle}
                     />
-                  ) : (
-                    <Eye
-                      size="23"
-                      color={'gray'}
-                      onPress={() => setSecureTextEntry(true)}
-                    />
-                  )
-                }
-                style={styles.inputStyle}
-              />
-            </ProgressStep>
-            <ProgressStep label="Tamamla" {...progressStep}>
-              <Input
-                size="large"
-                placeholder="Referans"
-                placeholderTextColor={'gray'}
-                clearButtonMode="while-editing"
-                style={styles.inputStyle}
-                value={reference}
-                onChangeText={value => setReference(value)}
-              />
-            </ProgressStep>
-          </ProgressSteps>
+                  </View>
+                  <Input
+                    size="large"
+                    placeholder="Şifre Doğrula"
+                    placeholderTextColor={'gray'}
+                    clearButtonMode="while-editing"
+                    onBlur={handleBlur('passwordConfirm')}
+                    caption={errors.passwordConfirm}
+                    value={values.passwordConfirm}
+                    onChangeText={handleChange('passwordConfirm')}
+                    status={errors.passwordConfirm ? 'danger' : 'basic'}
+                    secureTextEntry={secureTextEntry2}
+                    accessoryRight={() =>
+                      secureTextEntry2 ? (
+                        <EyeSlash
+                          size="23"
+                          color={'gray'}
+                          onPress={() => setSecureTextEntry2(false)}
+                        />
+                      ) : (
+                        <Eye
+                          size="23"
+                          color={'gray'}
+                          onPress={() => setSecureTextEntry2(true)}
+                        />
+                      )
+                    }
+                    style={styles.inputStyle}
+                  />
+                </ProgressStep>
+                <ProgressStep label="Tamamla" {...progressStep(handleSubmit)}>
+                  <Input
+                    size="large"
+                    placeholder="Referans"
+                    placeholderTextColor={'gray'}
+                    clearButtonMode="while-editing"
+                    style={styles.inputStyle}
+                    caption={errors.reference}
+                    value={values.reference}
+                    onChangeText={handleChange('reference')}
+                    onBlur={handleBlur('reference')}
+                    status={errors.reference ? 'danger' : 'basic'}
+                  />
+                </ProgressStep>
+              </ProgressSteps>
+            )}
+          </Formik>
         </View>
 
         <BottomSheet isOpen={isOpen}>
@@ -226,7 +270,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.BUTTON_COLOR,
   },
   inputStyle: {
-    marginVertical: 10,
+    marginVertical: 5,
     borderRadius: 40,
   },
   text: {
@@ -245,7 +289,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 22,
     borderRadius: 100,
     marginVertical: 10,
-    borderColor: Colors.BUTTON_COLOR
+    borderColor: Colors.BUTTON_COLOR,
   },
   buttonText: {
     color: Colors.WHITE,
