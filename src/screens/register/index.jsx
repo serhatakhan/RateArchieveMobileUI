@@ -96,21 +96,22 @@ const Register = ({navigation}) => {
               resetForm();
               console.log(values);
             }}>
-            {({handleChange, handleSubmit, handleBlur, values, errors}) => (
+            {({handleChange, handleSubmit, handleBlur, values, errors, touched}) => (
               <ProgressSteps {...progressSteps}>
                 <ProgressStep label="Ad - Soyad" {...firstProgressStep(handleSubmit)}>
                   <View style={{height: height * 0.083}}>
                     <Input
+                      secureTextEntry={false}
                       size="large"
                       placeholder="İsim"
                       placeholderTextColor={'gray'}
                       clearButtonMode="while-editing"
                       style={styles.inputStyle}
-                      caption={errors.name}
+                      caption={touched.name && errors.name ? errors.name : ''}
                       value={values.name}
                       onChangeText={handleChange('name')}
                       onBlur={handleBlur('name')}
-                      status={errors.name ? 'danger' : 'basic'}
+                      status={touched.name && errors.name ? 'danger' : 'basic'}
                     />
                   </View>
                   <View style={{height: height * 0.083}}>
@@ -120,11 +121,11 @@ const Register = ({navigation}) => {
                       placeholderTextColor={'gray'}
                       clearButtonMode="while-editing"
                       style={styles.inputStyle}
-                      caption={errors.surname}
+                      caption={touched.surname && errors.surname ? errors.surname : ''}
                       value={values.surname}
                       onChangeText={handleChange('surname')}
                       onBlur={handleBlur('surname')}
-                      status={errors.surname ? 'danger' : 'basic'}
+                      status={touched.surname && errors.surname ? 'danger' : 'basic'}
                     />
                   </View>
                   <Input
@@ -133,11 +134,11 @@ const Register = ({navigation}) => {
                     placeholderTextColor={'gray'}
                     clearButtonMode="while-editing"
                     style={styles.inputStyle}
-                    caption={errors.email}
+                    caption={touched.email && errors.email ? errors.email : ''}
                     value={values.email}
                     onChangeText={handleChange('email')}
                     onBlur={handleBlur('email')}
-                    status={errors.email ? 'danger' : 'basic'}
+                    status={touched.email && errors.email ? 'danger' : 'basic'}
                   />
                 </ProgressStep>
                 <ProgressStep label="Şifre" {...progressStep(handleSubmit)}>
@@ -148,10 +149,10 @@ const Register = ({navigation}) => {
                       placeholderTextColor={'gray'}
                       clearButtonMode="while-editing"
                       onBlur={handleBlur('password')}
-                      caption={errors.password}
+                      caption={touched.password && errors.password ? errors.password : ''}
                       value={values.password}
                       onChangeText={handleChange('password')}
-                      status={errors.password ? 'danger' : 'basic'}
+                      status={touched.password && errors.password ? 'danger' : 'basic'}
                       secureTextEntry={secureTextEntry}
                       accessoryRight={() =>
                         secureTextEntry ? (
@@ -177,10 +178,10 @@ const Register = ({navigation}) => {
                     placeholderTextColor={'gray'}
                     clearButtonMode="while-editing"
                     onBlur={handleBlur('passwordConfirm')}
-                    caption={errors.passwordConfirm}
+                    caption={touched.passwordConfirm && errors.passwordConfirm ? errors.passwordConfirm : ''}
                     value={values.passwordConfirm}
                     onChangeText={handleChange('passwordConfirm')}
-                    status={errors.passwordConfirm ? 'danger' : 'basic'}
+                    status={touched.passwordConfirm && errors.passwordConfirm ? 'danger' : 'basic'}
                     secureTextEntry={secureTextEntry2}
                     accessoryRight={() =>
                       secureTextEntry2 ? (
@@ -207,11 +208,11 @@ const Register = ({navigation}) => {
                     placeholderTextColor={'gray'}
                     clearButtonMode="while-editing"
                     style={styles.inputStyle}
-                    caption={errors.reference}
+                    caption={touched.reference && errors.reference ? errors.reference : ''}
                     value={values.reference}
                     onChangeText={handleChange('reference')}
                     onBlur={handleBlur('reference')}
-                    status={errors.reference ? 'danger' : 'basic'}
+                    status={touched.reference && errors.reference ? 'danger' : 'basic'}
                   />
                 </ProgressStep>
               </ProgressSteps>
@@ -228,7 +229,7 @@ const Register = ({navigation}) => {
             <Button
               style={styles.signInButton}
               size="medium"
-              onPress={() => navigation.navigate(SIGNIN)}>
+              onPress={() => navigation.replace(SIGNIN)}>
               {evaProps => (
                 <Text
                   {...evaProps}
